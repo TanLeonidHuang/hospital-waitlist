@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapView: MapView
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var googleMap: GoogleMap
+    private location: Location
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -61,35 +62,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-
-        googleMap.isMyLocationEnabled = true
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            location?.let {
-                val currentLatLng = LatLng(it.latitude, it.longitude)
-                googleMap.addMarker(MarkerOptions().position(currentLatLng).title("My Location"))
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
-            }
-        }
-            .addOnFailureListener { e ->
-                // Handle any errors that occurred while getting the location
-            }
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(Location.getCurrentLocation(), 16f))
     }
 }
 
